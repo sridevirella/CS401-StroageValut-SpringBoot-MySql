@@ -16,15 +16,6 @@ body {
   font-size: 40px;
 }
 
-.carousel-inner{
-  width:100%;!important;
-  color: white;
-}
-
-#ImgCarouse {
-  display: contents;
-}
-
 .carousel-caption {
      position: absolute;
      left: 40px;
@@ -36,42 +27,6 @@ body {
      bottom: 110px;
      right:0;
      padding-top: 90px;
-}
-
-.maintxt {position: relative;}
-.maintxt > img, .overlay-text {position: absolute;}
-
-.homeText {
-  border: 0;
-}
-
-#heartIcon, #search-checkbox,#favorite {
-  color:red;
-  width:30px;
-  height:30px;
-  display:none;
-}
-
-#addHeartIcon{
-  color:black;
-  width:30px;
-  height:30px;
-}
-.edit .eye {
-  width:30px!important;
-  height:30px!important;
-}
-
-.delete {
-  color:red;
-  width:25px!important;
-  height:25px!important;
-}
-
-.list-group-item {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
 }
 
 .btn-light:not(:disabled):not(.disabled).active {
@@ -109,19 +64,6 @@ h1 {
   background-color: gainsboro;
 }
 
-#heart {
-  color: grey;
-  font-size: 30px;
-}
-
-#heart.red {
-  color: red;
-}
-
-#searchWord, #searchDate {
-  display:none;
-}
-
 #sticky-footer {
   position: fixed;
   bottom: 0;
@@ -133,24 +75,11 @@ h1 {
   box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
 }
 
-.sliderText {
-  color: red;
-  font: 70px 'Museo700';
-}
-
 .homeInnerText {
   text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
   color: red;
   opacity: 0.6;
   font: 55px 'Raleway';
-}
-
-#flashMessage {
-  position: absolute;
-  top: 10%;
-  left: 2%;
-  z-index: 999;
-  margin-bottom: 0px!important;
 }
 
 .card {
@@ -182,25 +111,6 @@ h1 {
   font-size: 16px; !important;
   font-weight: normal;
 }
-
-.clickable-table {
-  cursor:pointer;
-}
-
 .bg-custom {
   background-color: #98FB98;
-}
-
-.view-all-card {
-  min-width: 200px;
-  margin-bottom: 9px;
-  padding-top: 0px; !important;
-}
-
-.view-options {
-  margin-left: auto;
-}
-
-.card-column-color-search {
-  background-color: #6495ED;
 }
