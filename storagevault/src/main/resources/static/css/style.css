@@ -1,0 +1,206 @@
+
+body {
+  font: 14px Lato, "Montserrat", sans-serif;
+  background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.appHeading {
+  color: #3F00FF !important;
+  text-align: center;
+  font-family: "Great Vibes";
+  font-weight: bolder;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 1px #fff;
+  font-size: 40px;
+}
+
+.carousel-inner{
+  width:100%;!important;
+  color: white;
+}
+
+#ImgCarouse {
+  display: contents;
+}
+
+.carousel-caption {
+     position: absolute;
+     left: 40px;
+     right: auto;
+     width: 40%;
+     height: 60%;
+     background-color: #AFDBF5;
+     opacity: 0.8;
+     bottom: 110px;
+     right:0;
+     padding-top: 90px;
+}
+
+.maintxt {position: relative;}
+.maintxt > img, .overlay-text {position: absolute;}
+
+.homeText {
+  border: 0;
+}
+
+#heartIcon, #search-checkbox,#favorite {
+  color:red;
+  width:30px;
+  height:30px;
+  display:none;
+}
+
+#addHeartIcon{
+  color:black;
+  width:30px;
+  height:30px;
+}
+.edit .eye {
+  width:30px!important;
+  height:30px!important;
+}
+
+.delete {
+  color:red;
+  width:25px!important;
+  height:25px!important;
+}
+
+.list-group-item {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.btn-light:not(:disabled):not(.disabled).active {
+  background-color: #98FB98;
+}
+
+.navbar-text {
+  font-size: xx-large;
+}
+
+.navbar-toggler {
+  margin-top: 5px;
+  margin-bottom: 3px;
+}
+
+.navbar-dark .navbar-text {
+  color: #f8f9fa;
+}
+
+.navbar {
+padding: 0rem !important;
+}
+
+.headingColor {
+background-color: #72A0C1;
+}
+
+h1 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.form-class {
+  background-color: gainsboro;
+}
+
+#heart {
+  color: grey;
+  font-size: 30px;
+}
+
+#heart.red {
+  color: red;
+}
+
+#searchWord, #searchDate {
+  display:none;
+}
+
+#sticky-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  margin-top: 5%;
+}
+
+.emphasize-dark {
+  box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
+}
+
+.sliderText {
+  color: red;
+  font: 70px 'Museo700';
+}
+
+.homeInnerText {
+  text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
+  color: red;
+  opacity: 0.6;
+  font: 55px 'Raleway';
+}
+
+#flashMessage {
+  position: absolute;
+  top: 10%;
+  left: 2%;
+  z-index: 999;
+  margin-bottom: 0px!important;
+}
+
+.card {
+  border: none;
+}
+
+.card-body {
+
+    padding-top: 0.25rem !important;
+    padding-right: 1.25rem !important;
+    padding-bottom: 0.25rem !important;
+    padding-left: 1.25rem !important;
+}
+
+.card-header {
+       padding-top: 0.25rem !important;
+       padding-right: 1.25rem !important;
+       padding-bottom: 0.25rem !important;
+       padding-left: 1.25rem !important;
+}
+
+.btn-group-lg>.btn, .btn-lg {
+    padding: 0.50rem !important;
+    font-size: 1rem !important;
+     line-height: 1.0 !important;
+    }
+
+.col-form-label {
+  font-size: 16px; !important;
+  font-weight: normal;
+}
+
+.clickable-table {
+  cursor:pointer;
+}
+
+.bg-custom {
+  background-color: #98FB98;
+}
+
+.view-all-card {
+  min-width: 200px;
+  margin-bottom: 9px;
+  padding-top: 0px; !important;
+}
+
+.view-options {
+  margin-left: auto;
+}
+
+.card-column-color-search {
+  background-color: #6495ED;
+}

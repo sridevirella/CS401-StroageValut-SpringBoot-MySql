@@ -3,9 +3,11 @@ package com.cs401.storagevault.controller;
 import com.cs401.storagevault.dbservices.UserService;
 import com.cs401.storagevault.model.tables.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,13 +27,15 @@ public class DBController {
         userService.saveUser(user);
     }
 
-    @RequestMapping(path="/get/user/{email}", method = RequestMethod.GET)
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+    @RequestMapping(path="/get/user", method = RequestMethod.GET)
+    public void getUserByEmail(@RequestParam String email) {
         try {
-            User _user = userService.getUserByEmail(email);
-            return new ResponseEntity<>(_user, HttpStatus.OK);
+            System.out.println("inside:"+email);
+            List<User> _user = userService.getUserByEmail(email);
+            System.out.println("emails::"+_user);
+           // return new ResponseEntity<>(_user, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
