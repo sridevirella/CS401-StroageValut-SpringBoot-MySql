@@ -23,8 +23,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<User> getUserByEmail(String email) {
-        return userRepository.getByEmail(email);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 }

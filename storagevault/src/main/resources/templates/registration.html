@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <title>Spring Framework Guru</title>
+    <title>Registration</title>
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
@@ -39,10 +39,10 @@
                             <h5 class="mb-0 my-2">Signup</h5>
                         </div>
                         <div class="card-body">
-                            <form method="post" , action="/users/save" class="form" role="form">
+                            <form method="post" , th:action="@{/users/save}" th:object="${user}" class="form" role="form">
                                 <div class="form-group">
-                                    <label class="col-form-label" for="firstName">Name</label>
-                                    <input class="form-control" id="firstName" type="text" name="first" required/>
+                                    <label class="col-form-label" for="name">Name</label>
+                                    <input class="form-control" id="name" type="text" name="name" required/>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-form-label" for="email">Email</label>
@@ -53,8 +53,11 @@
                                     <input class="form-control" id="password" type="password" name="password" required autocomplete="off"/>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-form-label" for="customerType">Customer Type</label>
-                                    <input class="form-control" id="customerType" type="text" name="customerType" required autocomplete="off"/>
+                                    <label class="col-form-label" for="userType">Customer Type</label>
+                                    <select class="form-control" name="userType" id="userType" required>
+                                        <option value="L">Lender</option>
+                                        <option value="C">Consumer</option>
+                                    </select>
                                 </div>
                                 <div>
                                 <button type="submit" class="btn btn-primary btn-lg float-right">Submit</button>

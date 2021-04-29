@@ -1,23 +1,111 @@
 package com.cs401.storagevault.controller;
 
+import com.cs401.storagevault.dbservices.UserService;
+import com.cs401.storagevault.model.tables.User;
+import org.dom4j.rule.Mode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.Session;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class UIController {
 
-    @RequestMapping(value = "/")
+    @Autowired
+    private UserService userService;
+
+    @GetMapping(value = "/")
     public String home() {
         return "home";
     }
 
-    @RequestMapping(value = "/registration")
+    @GetMapping(value = "/registration")
     public String registration() {
         return "registration";
     }
 
-    @RequestMapping(value = "/login")
+    @PostMapping(value = "/users/save")
+    public String saveUser(User user) {
+        System.out.println(user.toString());
+        userService.saveUser(user);
+        return "redirect:/login";
+    }
+
+    @GetMapping(value = "/login")
     public String login() {
         return "login";
+    }
+
+    @PostMapping(value = "/users/login")
+    public String userAuthentication(@RequestParam(name = "email") String email, @RequestParam(name = "password") String password, RedirectAttributes redirectAttrs, HttpServletResponse response ) {
+
+        System.out.println("email:"+email);
+        System.out.println("password:"+password);
+
+        User _user = userService.findByEmail(email);
+        redirectAttrs.addAttribute("userName", _user.getName());
+        redirectAttrs.addFlashAttribute("message", "successfully logged in");
+        System.out.println("redirectAttrs?"+redirectAttrs);
+
+        ResponseCookie resCookie = ResponseCookie.from("userName", _user.getName())
+                .httpOnly(true)
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .build();
+        response.addHeader("Set-Cookie", resCookie.toString());
+
+       if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'L')
+           return "redirect:/lenderMainPage";
+       else if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'C')
+           return "redirect:/consumerMainPage";
+       else
+           return "redirect:/login";
+
+    }
+
+    @GetMapping(value = "lenderMainPage")
+    public String lenderMainPage(@RequestParam(value = "userName") String userName, Model model) {
+        model.addAttribute("userName", userName);
+        return "lenderMainPage";
+    }
+
+    @GetMapping(value = "/lenderDashboard")
+    public String lenderDashBoard(HttpServletRequest request, Model model) {
+
+        List<Cookie> userNameCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("userName")).collect(Collectors.toList());
+        model.addAttribute("userName", userNameCookie.get(0).getValue());
+        return "lenderDashboard";
+    }
+
+    @GetMapping(value = "/deviceLending")
+    public String deviceLending(HttpServletRequest request, Model model) {
+
+        List<Cookie> userNameCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("userName")).collect(Collectors.toList());
+        model.addAttribute("userName", userNameCookie.get(0).getValue());
+        return "deviceLending";
+    }
+
+    @PostMapping(value = "/deviceRegistration/save")
+    public void saveDeviceRegistrationDetails() {
+
+    }
+
+    @GetMapping(value = "/marketPlace")
+    public String getMarketPlace() {
+        return "marketPlace";
     }
 }

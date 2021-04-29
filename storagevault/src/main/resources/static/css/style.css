@@ -111,6 +111,13 @@ h1 {
   font-size: 16px; !important;
   font-weight: normal;
 }
+
 .bg-custom {
   background-color: #98FB98;
+}
+
+.titles {
+     color: #007FFF !important;
+     opacity: 0.6 !important;
+     font: 16px 'Raleway' !important;
 }
