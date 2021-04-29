@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Lender Dashboard</title>
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light border">
+        <a class="navbar-brand" href="/"><i class="ml-3 fas fa-home"></i></a>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <span class="navbar-text col text-left appHeading">StorageVault</span>
+
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/lenderDashboard">Dashboard</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/deviceLending">Device Lending</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/marketPlace">Market Place</a>
+
+            <div class="btn-group">
+                <button type="button" class="nav-item nav-link btn btn-light col-auto"><i class="ml-3 fas fa-user"></i><span th:text="${userName}"></span></button>
+                <button type="button"
+                        class="nav-item nav-link btn btn-light dropdown-toggle dropdown-toggle-split col-auto"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/users/profile">Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/users/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div>
+    <p>Lender dash board</p>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+
+</html>
+<footer id="sticky-footer">
+    <div class="container-fluid bg-secondary">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-9">
+                    <p class="text-white">Copyright@2021StorageVault.All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

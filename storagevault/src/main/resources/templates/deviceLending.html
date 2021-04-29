@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Device Lending</title>
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link th:rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css}" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light border">
+        <a class="navbar-brand" href="/"><i class="ml-3 fas fa-home"></i></a>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <span class="navbar-text col text-left appHeading">StorageVault</span>
+
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/lenderDashboard">Dashboard</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/deviceLending">Device Lending</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/marketPlace">Market Place</a>
+
+            <div class="btn-group">
+                <button type="button" class="nav-item nav-link btn btn-light col-auto"><i class="ml-3 fas fa-user"></i><span th:text="${userName}"></span></button>
+                <button type="button"
+                        class="nav-item nav-link btn btn-light dropdown-toggle dropdown-toggle-split col-auto"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/users/profile">Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/users/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div id="stepper1" class="bs-stepper">
+    <div class="bs-stepper-header" role="tablist">
+        <div class="step" data-target="#device-registration">
+            <button type="button" class="step-trigger" role="tab" aria-controls="device-registration" id="device-registration-trigger">
+                <span class="bs-stepper-circle">1</span>
+                <span class="bs-stepper-label">Device Registration</span>
+            </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#pricing">
+            <button type="button" class="step-trigger" role="tab" aria-controls="pricing" id="pricing-trigger">
+                <span class="bs-stepper-circle">2</span>
+                <span class="bs-stepper-label">Pricing</span>
+            </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#payment">
+            <button type="button" class="step-trigger" role="tab" aria-controls="payment" id="payment-trigger">
+                <span class="bs-stepper-circle">3</span>
+                <span class="bs-stepper-label">Payment</span>
+            </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#device-connection">
+            <button type="button" class="step-trigger" role="tab" aria-controls="device-connection" id="device-connection-trigger">
+                <span class="bs-stepper-circle">4</span>
+                <span class="bs-stepper-label">Device Connection</span>
+            </button>
+        </div>
+    </div>
+    <div class="bs-stepper-content">
+        <form method="post", th:action="@{/deviceRegistration/save}" th:object="${deviceRegistration}" class="form" role="form">
+        <div id="device-registration" class="content" role="tabpanel" aria-labelledby="device-registration-trigger">
+            <div class="container py-2">
+                <div class="container emphasize-dark">
+            <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-12" style="float:left">
+                                <div class="card mt-1">
+                                    <div class="card-body">
+                                       <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; ">Device Registration Form</p>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="col-md-6">
+                        <div class="col-md-12" style="float:left">
+                            <div class="card mt-5">
+                                <div class="card-body">
+                            <p>Pricing....</p>
+                            <button class="btn btn-primary" onclick="stepper1.next()">Agree</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        <div id="pricing" class="content" role="tabpanel" aria-labelledby="pricing-trigger">
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            </div>
+            <button class="btn btn-primary" onclick="stepper1.previous()">Previous</button>
+            <button class="btn btn-primary" onclick="stepper1.next()">Next</button>
+        </div>
+
+        <div id="payment" class="content" role="tabpanel" aria-labelledby="payment-trigger">
+            <div class="form-group">
+                <label for="exampleInputPassword2">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
+            </div>
+            <button class="btn btn-primary" onclick="stepper1.previous()">Previous</button>
+            <button class="btn btn-primary" onclick="stepper1.next()">Next</button>
+        </div>
+
+        <div id="device-connection" class="content" role="tabpanel" aria-labelledby="device-connection-trigger">
+                <button class="btn btn-primary mt-5" onclick="stepper1.previous()">Previous</button>
+                <button type="submit" class="btn btn-primary mt-5">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script type="application/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js}"></script>
+
+<script>
+$(document).ready(function () {
+  var stepper = new Stepper($('.bs-stepper')[0])
+})
+
+var stepper1
+var stepperForm
+
+document.addEventListener('DOMContentLoaded', function () {
+  stepper1 = new Stepper(document.querySelector('#stepper1'))
+
+  var stepperFormEl = document.querySelector('#stepperForm')
+  stepperForm = new Stepper(stepperFormEl, {
+    animation: true
+  })
+
+  var btnNextList = [].slice.call(document.querySelectorAll('.btn-next-form'))
+  var stepperPanList = [].slice.call(stepperFormEl.querySelectorAll('.bs-stepper-pane'))
+  var inputMailForm = document.getElementById('inputMailForm')
+  var inputPasswordForm = document.getElementById('inputPasswordForm')
+  var form = stepperFormEl.querySelector('.bs-stepper-content form')
+
+  btnNextList.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      stepperForm.next()
+    })
+  })
+
+  stepperFormEl.addEventListener('show.bs-stepper', function (event) {
+    form.classList.remove('was-validated')
+    var nextStep = event.detail.indexStep
+    var currentStep = nextStep
+
+    if (currentStep > 0) {
+      currentStep--
+    }
+
+    var stepperPan = stepperPanList[currentStep]
+
+    if ((stepperPan.getAttribute('id') === 'test-form-1' && !inputMailForm.value.length)
+    || (stepperPan.getAttribute('id') === 'test-form-2' && !inputPasswordForm.value.length)) {
+      event.preventDefault()
+      form.classList.add('was-validated')
+    }
+  })
+})
+
+    $(".dropdown-menu a ").click(function(){
+                $(this).parents(".input-group-btn").find('.btn').text($(this).text());
+            });
+</script>
+</body>
+
+</html>
+<footer id="sticky-footer">
+    <div class="container-fluid bg-secondary">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-9">
+                    <p class="text-white">Copyright@2021StorageVault.All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
