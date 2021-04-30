@@ -1,0 +1,84 @@
+CREATE DATABASE storagevault;
+
+CREATE TABLE user( id int PRIMARY KEY,
+                   email varchar(40),
+                   password varchar(40),
+				   name varchar(40),
+				   user_type char
+                 );
+				 
+ALTER TABLE user MODIFY id int NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE brand(id int PRIMARY KEY,
+                   brandName varchar(40)
+                   );
+				   
+				   
+CREATE TABLE model(id int,
+                   brandId int,
+                   modelName varchar(40),
+				   PRIMARY KEY(id, brandId),
+				   FOREIGN KEY(brandId) REFERENCES brand(id) 
+                   );
+				   
+INSERT INTO brand VALUES(1,'Snology');
+INSERT INTO brand VALUES(2,'Qnap');
+INSERT INTO brand VALUES(3,'ASUSTOR');
+INSERT INTO brand VALUES(4,'Western Digital');
+
+
+INSERT INTO model VALUES(10,1, 'DS1621+');
+INSERT INTO model VALUES(11,1, 'DS220+');
+INSERT INTO model VALUES(12,1, 'DS920+');
+INSERT INTO model VALUES(13,1, 'DS1821+');
+INSERT INTO model VALUES(14,1, 'DS720+');
+
+INSERT INTO model VALUES(20,2, 'TS-453D-4G-US');
+INSERT INTO model VALUES(21,2, 'TVS-872XT-i5-16G-US');
+INSERT INTO model VALUES(22,2, 'TS-253D-4G-US');
+INSERT INTO model VALUES(23,2, 'TS-453D-8G-US');
+INSERT INTO model VALUES(24,2, 'TVS-672XT-i3-8G-US');
+
+INSERT INTO model VALUES(30,3, 'AS6602T, 2Bay');
+INSERT INTO model VALUES(32,3, 'AS1002T v2, 2-Bay');
+INSERT INTO model VALUES(31,3, 'AS6604T, 4Bay');
+INSERT INTO model VALUES(33,3, 'AS5304T');
+INSERT INTO model VALUES(34,3, 'AS1002T v2, 4-Bay');
+
+INSERT INTO model VALUES(40,4, 'WD 8TB My Cloud EX2');
+INSERT INTO model VALUES(41,4, 'WD Diskless EX2 Ultra');
+commit;
+
+CREATE TABLE pricing( id int PRIMARY KEY,
+                                 customerType char,
+								 monthlyPrice int
+                                );
+								
+INSERT INTO pricing VALUES(1,'L', 1);	
+INSERT INTO pricing VALUES(2,'C', 2);	
+
+ private int id;
+    private String email;
+    private String brand;
+    private String brandModel;
+    private int capacity;
+    private int duration;
+    private String name;
+    private String accountNumber;
+    private String routingNumber;
+    private File configFile;	
+
+create TABLE device_registration(rno int PRIMARY KEY,
+                                email varchar(40),
+								brand varchar(40),
+                                brand_model varchar(40),
+								capacity int,
+								duration int,
+								price int,
+								holder_name varchar(40),
+								account_number int,
+								routing_number int,
+								config_file BLOB
+                               );
+							   
+ALTER TABLE device_registration MODIFY rno int NOT NULL AUTO_INCREMENT;
