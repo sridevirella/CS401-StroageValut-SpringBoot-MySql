@@ -122,6 +122,8 @@
                                         <div class="card-body">
                                             <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; ">Pricing Details</p>
                                             <div id="pricing" style="font: 20px 'Raleway';font-weight: normal; " class="mt-5">
+                                               <div id="pricingHidden">
+                                               </div>
                                             </div>
                                             <button id= "agreeButton" class="btn btn-primary hide" onclick="stepper1.next()">Agree</button>
                                         </div>
@@ -328,7 +330,10 @@ function calculatePricing() {
 
         $("#pricing").empty();
         pricingValue = capacity * data * duration;
-        var pricingParagraph = "<p>" + "Your earnings for total duration <br>" + pricingValue + "$</p>";
+
+        $('<input/>').attr({type:'hidden',name:'price',value: + pricingValue}).appendTo('#pricingHidden');
+
+        var pricingParagraph = "<p>" + "Your total earnings for the duration <br>" + pricingValue + "$</p>";
         $("#pricing").append(pricingParagraph);
         $("#agreeButton").show();
     });

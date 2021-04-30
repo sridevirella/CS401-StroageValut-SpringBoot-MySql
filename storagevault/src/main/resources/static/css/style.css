@@ -16,19 +16,6 @@ body {
   font-size: 40px;
 }
 
-.carousel-caption {
-     position: absolute;
-     left: 40px;
-     right: auto;
-     width: 40%;
-     height: 60%;
-     background-color: #AFDBF5;
-     opacity: 0.8;
-     bottom: 110px;
-     right:0;
-     padding-top: 90px;
-}
-
 .btn-light:not(:disabled):not(.disabled).active {
   background-color: #98FB98;
 }
@@ -116,6 +103,13 @@ h1 {
   background-color: #98FB98;
 }
 
+.fancyLine {
+border: 2px solid #5c98d6;
+width: 100%;
+margin-left: auto;
+margin-right: auto;
+}
+
 label {
      opacity: 0.6 !important;
      font: 16px 'Raleway' !important;
@@ -124,4 +118,8 @@ label {
 
 .hide {
 	display: none;
+}
+
+.view-options {
+  margin-left: auto;
 }

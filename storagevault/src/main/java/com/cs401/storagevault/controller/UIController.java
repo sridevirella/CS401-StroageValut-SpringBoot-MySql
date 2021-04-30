@@ -91,7 +91,21 @@ public class UIController {
     public String lenderDashBoard(HttpServletRequest request, Model model) {
 
         List<Cookie> userNameCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("userName")).collect(Collectors.toList());
+        List<Cookie> emailCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("email")).collect(Collectors.toList());
         model.addAttribute("userName", userNameCookie.get(0).getValue());
+        List<DeviceRegistration> lentDevicesList = dbService.getUserLentDeviceDetails(emailCookie.get(0).getValue());
+        List<String> lentDeviceListString = new ArrayList<>();
+
+        lentDevicesList.forEach( device -> {
+            String resultString = "Device Brand:           " + device.getBrand() + "\n" +
+                                  "Device Model:           " + device.getBrandModel() + "\n" +
+                                  "Lent Storage Capacity:  " + device.getCapacity() + "\n" +
+                                  "Lent Duration:          " + device.getDuration() + "\n" +
+                                  "Earnings:               " + device.getPrice() + "\n";
+            lentDeviceListString.add(resultString);
+        });
+        model.addAttribute("registrations",  lentDeviceListString);
+        model.addAttribute("newLineChar", '\n');
         return "lenderDashboard";
     }
 
@@ -123,15 +137,26 @@ public class UIController {
     }
 
     @PostMapping(value = "/deviceRegistration/save")
-    public String saveDeviceRegistrationDetails(DeviceRegistration deviceRegistration) {
+    public String saveDeviceRegistrationDetails(DeviceRegistration deviceRegistration, Model model) {
 
         System.out.println("payload:"+deviceRegistration.toString());
         dbService.saveDeviceRegistrationDetails(deviceRegistration);
-        return "lenderDashboard";
+        List<String> lentDeviceDetails = new ArrayList<>();
+
+        lentDeviceDetails.add(deviceRegistration.getBrand());
+        lentDeviceDetails.add(deviceRegistration.getBrandModel());
+        lentDeviceDetails.add(String.valueOf(deviceRegistration.getCapacity()));
+        lentDeviceDetails.add(String.valueOf(deviceRegistration.getDuration()));
+        lentDeviceDetails.add(String.valueOf(deviceRegistration.getPrice()));
+
+        model.addAttribute("registrations", lentDeviceDetails);
+        return "redirect:/lenderDashboard";
     }
+
 
     @GetMapping(value = "/marketPlace")
     public String getMarketPlace() {
         return "marketPlace";
     }
+
 }

@@ -62,4 +62,8 @@ public class DBService {
     public void saveDeviceRegistrationDetails(DeviceRegistration deviceRegistration) {
         deviceRegistrationRepo.save(deviceRegistration);
     }
+
+    public List<DeviceRegistration> getUserLentDeviceDetails(String email) {
+        return deviceRegistrationRepo.findByUserEmail(email);
+    }
 }
