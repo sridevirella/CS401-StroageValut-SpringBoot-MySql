@@ -73,7 +73,7 @@ public class UIController {
 
 
        if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'L')
-           return "redirect:/deviceDashboard";
+           return "redirect:/lenderDashboard";
        else if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'C')
            return "redirect:/consumerDashboard";
        else
