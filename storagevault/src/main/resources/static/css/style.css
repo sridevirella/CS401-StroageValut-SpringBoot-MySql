@@ -116,8 +116,12 @@ h1 {
   background-color: #98FB98;
 }
 
-.titles {
-     color: #007FFF !important;
+label {
      opacity: 0.6 !important;
      font: 16px 'Raleway' !important;
+     font-weight: bolder !important;
+}
+
+.hide {
+	display: none;
 }
