@@ -100,7 +100,7 @@ public class UIController {
             String resultString = "Device Brand:           " + device.getBrand() + "\n" +
                                   "Device Model:           " + device.getBrandModel() + "\n" +
                                   "Lent Storage Capacity:  " + device.getCapacity() + " GB" +  "\n" +
-                                  "Lent Duration:          " + device.getDuration() + "\n" +
+                                  "Lent Duration:          " + device.getDuration() + " Hours" + "\n" +
                                   "Earnings:               " + device.getPrice() + " $" + "\n";
             lentDeviceListString.add(resultString);
         });
