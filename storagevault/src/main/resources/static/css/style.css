@@ -16,6 +16,19 @@ body {
   font-size: 40px;
 }
 
+.carousel-caption {
+     position: absolute;
+     left: 40px;
+     right: auto;
+     width: 40%;
+     height: 60%;
+     background-color: #AFDBF5;
+     opacity: 0.8;
+     bottom: 110px;
+     right:0;
+     padding-top: 90px;
+}
+
 .btn-light:not(:disabled):not(.disabled).active {
   background-color: #98FB98;
 }
