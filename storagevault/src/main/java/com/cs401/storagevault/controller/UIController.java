@@ -99,9 +99,9 @@ public class UIController {
         lentDevicesList.forEach( device -> {
             String resultString = "Device Brand:           " + device.getBrand() + "\n" +
                                   "Device Model:           " + device.getBrandModel() + "\n" +
-                                  "Lent Storage Capacity:  " + device.getCapacity() + "\n" +
+                                  "Lent Storage Capacity:  " + device.getCapacity() + " GB" +  "\n" +
                                   "Lent Duration:          " + device.getDuration() + "\n" +
-                                  "Earnings:               " + device.getPrice() + "\n";
+                                  "Earnings:               " + device.getPrice() + " $" + "\n";
             lentDeviceListString.add(resultString);
         });
         model.addAttribute("registrations",  lentDeviceListString);
@@ -141,15 +141,15 @@ public class UIController {
 
         System.out.println("payload:"+deviceRegistration.toString());
         dbService.saveDeviceRegistrationDetails(deviceRegistration);
-        List<String> lentDeviceDetails = new ArrayList<>();
-
-        lentDeviceDetails.add(deviceRegistration.getBrand());
-        lentDeviceDetails.add(deviceRegistration.getBrandModel());
-        lentDeviceDetails.add(String.valueOf(deviceRegistration.getCapacity()));
-        lentDeviceDetails.add(String.valueOf(deviceRegistration.getDuration()));
-        lentDeviceDetails.add(String.valueOf(deviceRegistration.getPrice()));
-
-        model.addAttribute("registrations", lentDeviceDetails);
+//        List<String> lentDeviceDetails = new ArrayList<>();
+//
+//        lentDeviceDetails.add(deviceRegistration.getBrand());
+//        lentDeviceDetails.add(deviceRegistration.getBrandModel());
+//        lentDeviceDetails.add(String.valueOf(deviceRegistration.getCapacity()));
+//        lentDeviceDetails.add(String.valueOf(deviceRegistration.getDuration()));
+//        lentDeviceDetails.add(String.valueOf(deviceRegistration.getPrice()));
+//
+//        model.addAttribute("registrations", lentDeviceDetails);
         return "redirect:/lenderDashboard";
     }
 
