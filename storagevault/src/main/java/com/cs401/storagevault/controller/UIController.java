@@ -73,9 +73,9 @@ public class UIController {
 
 
        if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'L')
-           return "redirect:/lenderMainPage";
+           return "redirect:/deviceDashboard";
        else if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'C')
-           return "redirect:/consumerMainPage";
+           return "redirect:/consumerDashboard";
        else
            return "redirect:/login";
 
@@ -141,15 +141,6 @@ public class UIController {
 
         System.out.println("payload:"+deviceRegistration.toString());
         dbService.saveDeviceRegistrationDetails(deviceRegistration);
-//        List<String> lentDeviceDetails = new ArrayList<>();
-//
-//        lentDeviceDetails.add(deviceRegistration.getBrand());
-//        lentDeviceDetails.add(deviceRegistration.getBrandModel());
-//        lentDeviceDetails.add(String.valueOf(deviceRegistration.getCapacity()));
-//        lentDeviceDetails.add(String.valueOf(deviceRegistration.getDuration()));
-//        lentDeviceDetails.add(String.valueOf(deviceRegistration.getPrice()));
-//
-//        model.addAttribute("registrations", lentDeviceDetails);
         return "redirect:/lenderDashboard";
     }
 
