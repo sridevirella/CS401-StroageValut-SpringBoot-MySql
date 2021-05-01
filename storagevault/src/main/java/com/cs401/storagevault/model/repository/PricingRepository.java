@@ -8,4 +8,7 @@ public interface PricingRepository extends JpaRepository<Pricing, Integer> {
 
     @Query(value = "SELECT monthlyPrice FROM pricing WHERE customerType = :customerType", nativeQuery = true)
     int findByCustomerType(char customerType);
+
+    @Query(value = "SELECT yearlyPrice FROM pricing WHERE customerType = :customerType", nativeQuery = true)
+    int yearlySubscriptionPrice(char customerType);
 }

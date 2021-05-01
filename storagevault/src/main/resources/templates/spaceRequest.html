@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Device Lending</title>
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light border">
+        <a class="navbar-brand" href="/"><i class="ml-3 fas fa-home"></i></a>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <span class="navbar-text col text-left appHeading">StorageVault</span>
+
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/consumerDashboard">Dashboard</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/spaceRequest">Space Request</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/storageRetrieval">Storage/Retrieval</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/marketPlace">Market Place</a>
+
+            <div class="btn-group">
+                <button type="button" class="nav-item nav-link btn btn-light col-auto"><i class="ml-3 fas fa-user"></i><span th:text="${userName}"></span></button>
+                <button type="button"
+                        class="nav-item nav-link btn btn-light dropdown-toggle dropdown-toggle-split col-auto"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/users/profile">Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<form method="post", th:action="@{/spaceRequest/save}" th:object="${spaceRequest}" class="form" role="form">
+    <input type="hidden" name="email" th:value="${email}">
+    <div class="container py-5">
+    <div class="container emphasize-dark">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="col-md-12" style="float:left">
+                    <div class="card mt-2 mb-4">
+                        <div class="card-body">
+                            <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; ">Space Request Form</p>
+
+                            <div class="form-group">
+                                <label for="capacity">How Much Space Do You Need (In GB)</label>
+                                <input class="form-control" id="capacity" type="number" name="capacity" required  message="minimum lending space should be 10GB" /><br>
+                                <span id="errorMsg" style="display:none; color: red;">minimum lending space should be 10GB</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-form-label" for="subscription">Subscription Type</label>
+                                <select class="form-control" name="subscription" id="subscription" required>
+                                    <option value="N">Nothing Selected</option>
+                                    <option value="M">Monthly</option>
+                                    <option value="Y">Yearly</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="col-md-12" style="float:left">
+                    <div class="card mt-2 mb-4">
+                        <div class="card-body">
+                            <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; ">Pricing Details</p>
+                            <div id="pricing" style="font: 20px 'Raleway';font-weight: normal; " class="mt-5">
+                            </div>
+                            <input id="pricingHidden" type="hidden" name="price" value="">
+                            <button id="agreeButton" class="btn btn-primary hide">Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+<script type="application/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{jax/libs/jquery/3.4.1/jquery.min.js}"></script>
+
+<script type="application/javascript">
+
+  $(document).ready(function() {
+
+     $("#subscription").change(function() {
+        calculatePricing();
+    });
+});
+
+function calculatePricing() {
+
+    var capacity = $("#capacity").val();
+    var subscription = $("#subscription").val();
+
+    $.get( "/consumer/pricing?customerType=C&subscription="+subscription, function( data ) {
+
+        $("#pricing").empty();
+       if(subscription === "M") {
+          var pricingValue = (capacity * data) + "$ Monthly";
+        } else {
+          var pricingValue = (capacity * data) + "$ Yearly";
+        }
+
+        var pricingParagraph = "<p>" + "Your Subscription Payment <br>" + pricingValue + "</p>";
+        $("#pricing").append(pricingParagraph);
+        $("input[id=pricingHidden]").val(pricingValue);
+        $("#agreeButton").show();
+    });
+}
+
+$("#capacity" ).keyup(function() {
+  if($('#capacity').val()<10){
+      $('#errorMsg').show();
+  }
+  else{
+    $('#errorMsg').hide();
+  }
+});
+
+</script>
+</body>
+</html>
+<footer id="sticky-footer">
+    <div class="container-fluid bg-secondary">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-9">
+                    <p class="text-white">Copyright@2021StorageVault.All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

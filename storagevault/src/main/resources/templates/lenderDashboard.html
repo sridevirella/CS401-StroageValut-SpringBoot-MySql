@@ -49,20 +49,16 @@
         <div class="col-md-6 mx-auto mt-4">
             <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; text-align:center">Details of Lent NAS Devices</p>
             <div class="d-flex flex-column flex-nowrap">
-                <div class="card card-body emphasize-dark">
+                <div th:each="registration: ${registrations}">
+                <div class="card card-body emphasize-dark mt-2">
                     <div class="card-columns">
-                        <p></p>
                     </div>
                     <div class="col-form-label">
-
-                        <div th:each="registration: ${registrations}">
+                        <hr class="bg-custom fancyLine">
                             <div>
                                 <span th:utext="${#strings.replace(registration, T(org.apache.commons.lang3.StringUtils).LF, '&lt;br /&gt;')}"></span>
                             </div>
-                            <hr class="bg-custom fancyLine">
                         </div>
-
-<!--                        <p th:each="registration: ${registrations}" th:utext="${#strings.replace(registration, T(org.apache.commons.lang3.StringUtils).LF, '&lt;br /&gt;')}"></p>-->
                     </div>
                    </div>
                 </div>

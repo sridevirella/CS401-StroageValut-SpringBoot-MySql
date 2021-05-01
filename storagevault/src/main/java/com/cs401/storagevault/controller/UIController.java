@@ -2,6 +2,7 @@ package com.cs401.storagevault.controller;
 
 import com.cs401.storagevault.dbservices.DBService;
 import com.cs401.storagevault.model.tables.DeviceRegistration;
+import com.cs401.storagevault.model.tables.SpaceRequest;
 import com.cs401.storagevault.model.tables.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
@@ -47,30 +48,10 @@ public class UIController {
     @PostMapping(value = "/users/login")
     public String userAuthentication(@RequestParam(name = "email") String email, @RequestParam(name = "password") String password, RedirectAttributes redirectAttrs, HttpServletResponse response ) {
 
-        System.out.println("email:"+email);
-        System.out.println("password:"+password);
-
         User _user = dbService.findByEmail(email);
         redirectAttrs.addAttribute("userName", _user.getName());
-        redirectAttrs.addFlashAttribute("message", "successfully logged in");
-        System.out.println("redirectAttrs?"+redirectAttrs);
-
-        ResponseCookie userNameCookie = ResponseCookie.from("userName", _user.getName())
-                                                 .httpOnly(true)
-                                                 .sameSite("None")
-                                                 .secure(true)
-                                                 .path("/")
-                                                 .build();
-        ResponseCookie emailCookie = ResponseCookie.from("email", _user.getEmail())
-                .httpOnly(true)
-                .sameSite("None")
-                .secure(true)
-                .path("/")
-                .build();
-
-        response.addHeader("Set-Cookie", userNameCookie.toString());
-        response.addHeader("Set-Cookie", emailCookie.toString());
-
+        createCookie(response, "userName", _user.getName());
+        createCookie(response, "email", _user.getEmail());
 
        if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'L')
            return "redirect:/lenderDashboard";
@@ -78,7 +59,6 @@ public class UIController {
            return "redirect:/consumerDashboard";
        else
            return "redirect:/login";
-
     }
 
     @GetMapping(value = "lenderMainPage")
@@ -90,10 +70,8 @@ public class UIController {
     @GetMapping(value = "/lenderDashboard")
     public String lenderDashBoard(HttpServletRequest request, Model model) {
 
-        List<Cookie> userNameCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("userName")).collect(Collectors.toList());
-        List<Cookie> emailCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("email")).collect(Collectors.toList());
-        model.addAttribute("userName", userNameCookie.get(0).getValue());
-        List<DeviceRegistration> lentDevicesList = dbService.getUserLentDeviceDetails(emailCookie.get(0).getValue());
+        model.addAttribute("userName", getCookieValue(request, "userName"));
+        List<DeviceRegistration> lentDevicesList = dbService.getUserLentDeviceDetails(getCookieValue(request, "email"));
         List<String> lentDeviceListString = new ArrayList<>();
 
         lentDevicesList.forEach( device -> {
@@ -105,26 +83,68 @@ public class UIController {
             lentDeviceListString.add(resultString);
         });
         model.addAttribute("registrations",  lentDeviceListString);
-        model.addAttribute("newLineChar", '\n');
         return "lenderDashboard";
+    }
+
+    @GetMapping(value = "/consumerDashboard")
+    public String consumerDashBoard(HttpServletRequest request, Model model) {
+
+        model.addAttribute("userName", getCookieValue(request, "userName"));
+        List<DeviceRegistration> lentDevicesList = dbService.getUserLentDeviceDetails(getCookieValue(request, "email"));
+        List<String> lentDeviceListString = new ArrayList<>();
+
+        lentDevicesList.forEach( device -> {
+            String resultString = "Device Brand:           " + device.getBrand() + "\n" +
+                    "Device Model:           " + device.getBrandModel() + "\n" +
+                    "Lent Storage Capacity:  " + device.getCapacity() + " GB" +  "\n" +
+                    "Lent Duration:          " + device.getDuration() + " Hours" + "\n" +
+                    "Earnings:               " + device.getPrice() + " $" + "\n";
+            lentDeviceListString.add(resultString);
+        });
+        model.addAttribute("registrations",  lentDeviceListString);
+        return "consumerDashboard";
     }
 
     @GetMapping(value = "/deviceLending")
     public String deviceLending(HttpServletRequest request, Model model) {
 
-        List<Cookie> userNameCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("userName")).collect(Collectors.toList());
-        List<Cookie> emailCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("email")).collect(Collectors.toList());
-
-        System.out.println("email:"+ emailCookie.get(0).getValue());
-        model.addAttribute("userName", userNameCookie.get(0).getValue());
-        model.addAttribute("email", emailCookie.get(0).getValue());
+        model.addAttribute("userName", getCookieValue(request, "userName"));
+        model.addAttribute("email", getCookieValue(request, "email"));
         model.addAttribute("brands", dbService.getBrands());
         return "deviceLending";
     }
 
+    @GetMapping(value = "/spaceRequest")
+    public String consumerSpaceRequest(HttpServletRequest request, Model model) {
+
+        model.addAttribute("userName", getCookieValue(request, "userName"));
+        model.addAttribute("email", getCookieValue(request, "email"));
+        return "spaceRequest";
+    }
+
+    @PostMapping(value = "/spaceRequest/save")
+    public String saveConsumerSpaceRequestDetails(SpaceRequest spaceRequest) {
+
+        dbService.saveConsumerSpaceRequestDetails(spaceRequest);
+        return "redirect:/consumerPayment";
+    }
+
+    @GetMapping(value = "/consumerPayment")
+    public  String consumerPayment(HttpServletRequest request, Model model) {
+
+        String amount = dbService.getConsumersPriceDetails(getCookieValue(request, "email"));
+        model.addAttribute("amount", amount);
+        return "consumerPayment";
+    }
+
+    @GetMapping(value = "/storageRetrieval")
+    public String consumerStorageAndRetrieval() {
+        return "storageRetrieval";
+    }
+
     @RequestMapping(value = "/models")
     @ResponseBody
-    public Set<String> getRegions(@RequestParam String brand) {
+    public Set<String> getModels(@RequestParam String brand) {
         Map<String, Set<String>> models = dbService.getModels(brand);
         return models.get(brand);
     }
@@ -132,8 +152,15 @@ public class UIController {
     @RequestMapping(value = "/lender/pricing")
     @ResponseBody
     public int getPricingModel(@RequestParam char customerType) {
-        int pricingValue = dbService.getPricingModel(customerType);
-        return pricingValue;
+        return dbService.getPricingModel(customerType, "");
+    }
+
+    @RequestMapping(value = "/consumer/pricing")
+    @ResponseBody
+    public int getPricingModel(@RequestParam char customerType, @RequestParam String subscription) {
+
+        System.out.println("inside:"+ subscription);
+        return dbService.getPricingModel(customerType, subscription);
     }
 
     @PostMapping(value = "/deviceRegistration/save")
@@ -144,10 +171,30 @@ public class UIController {
         return "redirect:/lenderDashboard";
     }
 
+    @PostMapping(value = "/consumerPayment/save")
+    public String saveConsumerPayDetails() {
+        return "redirect:/storageRetrieval";
+    }
 
     @GetMapping(value = "/marketPlace")
     public String getMarketPlace() {
         return "marketPlace";
     }
 
+    private void createCookie(HttpServletResponse response, String cookieName, String cookieValue) {
+
+        ResponseCookie newCookie = ResponseCookie.from(cookieName, cookieValue)
+                .httpOnly(true)
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .build();
+
+        response.addHeader("Set-Cookie", newCookie.toString());
+    }
+
+    private String getCookieValue(HttpServletRequest request, String cookieName) {
+
+        return Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("email")).collect(Collectors.toList()).get(0).getValue();
+    }
 }
