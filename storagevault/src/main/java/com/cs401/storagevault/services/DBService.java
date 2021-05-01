@@ -1,7 +1,6 @@
-package com.cs401.storagevault.dbservices;
+package com.cs401.storagevault.services;
 
 import com.cs401.storagevault.model.repository.*;
-import com.cs401.storagevault.model.tables.Brand;
 import com.cs401.storagevault.model.tables.DeviceRegistration;
 import com.cs401.storagevault.model.tables.SpaceRequest;
 import com.cs401.storagevault.model.tables.User;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -74,6 +74,15 @@ public class DBService {
 
     public void saveConsumerSpaceRequestDetails(SpaceRequest spaceRequest) {
         spaceRequestRepository.save(spaceRequest);
+    }
+
+    public void updateUsageSpace(String email, Long usageBytes) {
+        int usedSpace = spaceRequestRepository.getRequestsByEmail(email).getUsedSpace();
+        spaceRequestRepository.updateUsage(email, (usedSpace + usageBytes.intValue()));
+    }
+
+    public SpaceRequest getConsumerSpaceRequests(String email) {
+        return spaceRequestRepository.getRequestsByEmail(email);
     }
 
     public String getConsumersPriceDetails(String email) {

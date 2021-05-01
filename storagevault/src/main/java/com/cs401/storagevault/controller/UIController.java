@@ -1,19 +1,26 @@
 package com.cs401.storagevault.controller;
 
-import com.cs401.storagevault.dbservices.DBService;
+import com.cs401.storagevault.services.DBService;
+import com.cs401.storagevault.model.FileStorage;
 import com.cs401.storagevault.model.tables.DeviceRegistration;
 import com.cs401.storagevault.model.tables.SpaceRequest;
 import com.cs401.storagevault.model.tables.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,6 +29,14 @@ public class UIController {
 
     @Autowired
     private DBService dbService;
+
+    private final FileStorage fileStorage;
+
+    @Autowired
+    public UIController(FileStorage fileStorage) {
+        this.fileStorage = fileStorage;
+    }
+
 
     @GetMapping(value = "/")
     public String home() {
@@ -90,18 +105,18 @@ public class UIController {
     public String consumerDashBoard(HttpServletRequest request, Model model) {
 
         model.addAttribute("userName", getCookieValue(request, "userName"));
-        List<DeviceRegistration> lentDevicesList = dbService.getUserLentDeviceDetails(getCookieValue(request, "email"));
-        List<String> lentDeviceListString = new ArrayList<>();
+        SpaceRequest spaceRequest = dbService.getConsumerSpaceRequests(getCookieValue(request, "email"));
+        List<String> spaceRequestListString = new ArrayList<>();
+        String resultString = "";
 
-        lentDevicesList.forEach( device -> {
-            String resultString = "Device Brand:           " + device.getBrand() + "\n" +
-                    "Device Model:           " + device.getBrandModel() + "\n" +
-                    "Lent Storage Capacity:  " + device.getCapacity() + " GB" +  "\n" +
-                    "Lent Duration:          " + device.getDuration() + " Hours" + "\n" +
-                    "Earnings:               " + device.getPrice() + " $" + "\n";
-            lentDeviceListString.add(resultString);
-        });
-        model.addAttribute("registrations",  lentDeviceListString);
+        if (spaceRequest != null) {
+             resultString = "Allocated storage space:   " + spaceRequest.getCapacity() + "GB" + "\n" +
+                            "usage cost:                " + spaceRequest.getPrice() + "\n" +
+                            "Used Storage Space:        " + getFileSize(spaceRequest.getUsedSpace()) + "\n";
+             spaceRequestListString.add(resultString);
+     }
+
+        model.addAttribute("spaceRequests",  spaceRequestListString);
         return "consumerDashboard";
     }
 
@@ -135,11 +150,6 @@ public class UIController {
         String amount = dbService.getConsumersPriceDetails(getCookieValue(request, "email"));
         model.addAttribute("amount", amount);
         return "consumerPayment";
-    }
-
-    @GetMapping(value = "/storageRetrieval")
-    public String consumerStorageAndRetrieval() {
-        return "storageRetrieval";
     }
 
     @RequestMapping(value = "/models")
@@ -195,6 +205,47 @@ public class UIController {
 
     private String getCookieValue(HttpServletRequest request, String cookieName) {
 
-        return Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("email")).collect(Collectors.toList()).get(0).getValue();
+        return Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals(cookieName)).collect(Collectors.toList()).get(0).getValue();
+    }
+
+    @GetMapping("/storageRetrieval")
+    public String listUploadedFiles(Model model) throws IOException {
+
+        model.addAttribute("files", fileStorage.loadAllFiles().map(
+                path -> MvcUriComponentsBuilder.fromMethodName(UIController.class,
+                        "getFile", path.getFileName().toString()).build().toUri().toString())
+                .collect(Collectors.toList()));
+
+        return "storageRetrieval";
+    }
+
+    @GetMapping("/files/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) throws Exception {
+
+        Resource file = fileStorage.loadAsResourceFile(filename);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    }
+
+    @PostMapping("/storageRetrieval/save")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, HttpServletRequest request) throws IOException {
+
+        dbService.updateUsageSpace(getCookieValue(request, "email"), file.getSize());
+        fileStorage.storeFile(file);
+        return "redirect:/storageRetrieval";
+    }
+
+    private String getFileSize(long size) {
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        float kb = 1024.0f;
+        float mb = kb * kb;
+        float gb = mb * kb;
+
+        if(size < mb)
+            return decimalFormat.format(size/kb)+ " Kb";
+        else if(size < gb)
+            return decimalFormat.format(size/mb) + " Mb";
+        else return "";
     }
 }

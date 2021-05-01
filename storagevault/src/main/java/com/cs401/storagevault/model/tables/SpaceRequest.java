@@ -9,13 +9,16 @@ public class SpaceRequest {
     private String email;
     private int capacity;
     private String price;
+    @Column(name="used_space")
+    private int usedSpace;
 
     public SpaceRequest() {}
 
-    public SpaceRequest(String email, int capacity, String price) {
+    public SpaceRequest(String email, int capacity, String price, int usedSpace) {
         this.email = email;
         this.capacity = capacity;
         this.price = price;
+        this.usedSpace = usedSpace;
     }
 
     public String getEmail() {
@@ -40,5 +43,13 @@ public class SpaceRequest {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public int getUsedSpace() {
+        return usedSpace;
+    }
+
+    public void setUsedSpace(int usedSpace) {
+        this.usedSpace = usedSpace;
     }
 }
