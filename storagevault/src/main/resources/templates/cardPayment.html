@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Payment</title>
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light border">
+        <a class="navbar-brand" href="/"><i class="ml-3 fas fa-home"></i></a>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <span class="navbar-text col text-left appHeading">StorageVault</span>
+
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/consumerDashboard">Dashboard</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/spaceRequest">Space Request</a>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/storageRetrieval">Storage/Retrieval</a>
+            <div class="btn-group">
+                <button type="button" class="nav-item nav-link btn btn-light col-auto">Market Place</button>
+                <button type="button"
+                        class="nav-item nav-link btn btn-light dropdown-toggle dropdown-toggle-split col-auto"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/sell">Sell</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/products">Buy</a>
+                </div>
+            </div>
+            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
+               href="/cardPayment"><i class="fa" style="font-size:24px">&#xf07a;</i>
+                <span class='badge badge-warning' id='itemCount'>0</span></a>
+
+            <div class="btn-group">
+                <button type="button" class="nav-item nav-link btn btn-light col-auto"><i class="ml-3 fas fa-user"></i><span th:text="${userName}"></span></button>
+                <button type="button"
+                        class="nav-item nav-link btn btn-light dropdown-toggle dropdown-toggle-split col-auto"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/users/profile">Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container py-5">
+    <div class="container emphasize-dark">
+        <div class="row">
+
+            <div class="col-md-6 mt-3">
+                <div class="col-md-12" style="float:left">
+                    <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; text-align:center;">Product Payment</p>
+                    <div class="card mt-1">
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label class="col-form-label" for="fullName"><i class="ml-3 fas fa-user"></i>Full Name</label>
+                                <input class="form-control" id="fullName" type="text" name="fullName" required/>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-form-label" for="address"><i class="ml-3 fas fa-address-card">Address</i></label>
+                                <input class="form-control" id="address" type="text" name="address" required/>
+                            </div>
+
+                            <div class="form-group">
+                                <span>
+                                    <label class="col-form-label" for="city"><i class="ml-3 fas fa-city">City</i></label>
+                                    <input class="form-control" id="city" type="text" name="city" required/>
+                                </span>
+                                <span>
+                                    <label class="col-form-label" for="zipcode">Zip</label>
+                                <input class="form-control" id="zipcode" type="text" name="zipcode" required/>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <div class="col-md-12" style="float:left">
+                    <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; text-align:center;">Payment Details</p>
+                    <article class="card">
+                        <div class="card-body p-5">
+                            <form method="post", th:action="@{/cardPayment/save}" class="form" role="form" onsubmit="return alert('Your payment is successful\nThank you for shopping with us')">
+                                <div class="form-group">
+                                    <label for="username">Name on the card</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                        </div>
+                                        <input id="username" type="text" class="form-control" name="username" placeholder="" required="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cardNumber">Card Number</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-credit-card"></i></span>
+                                        </div>
+                                        <input id="cardNumber" type="text" class="form-control" name="cardNumber" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label><span class="hidden-xs">Expiration</span></label>
+                                            <div class="form-inline">
+                                                <select class="form-control" style="width:45%">
+                                                    <option>MM</option>
+                                                    <option>01 - January</option>
+                                                    <option>02 - February</option>
+                                                    <option>03 - March</option>
+                                                    <option>04 - April</option>
+                                                    <option>05 - May</option>
+                                                    <option>06 - June</option>
+                                                    <option>07 - July</option>
+                                                    <option>08 - August</option>
+                                                    <option>09 - September</option>
+                                                    <option>10 - October</option>
+                                                    <option>11 - November</option>
+                                                    <option>12 - December</option>
+                                                </select>
+                                                <span style="width:10%; text-align: center"> / </span>
+                                                <select class="form-control" style="width:45%">
+                                                    <option>YY</option>
+                                                    <option>2021</option>
+                                                    <option>2022</option>
+                                                    <option>2023</option>
+                                                    <option>2024</option>
+                                                    <option>2025</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label data-toggle="tooltip" title="" data-original-title="3 digits code on back side of the card">CVV <i class="fa fa-question-circle"></i></label>
+                                            <input class="form-control" required="" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button id="amountButton" class="btn btn-primary btn-block disabled" type="button"> Total amount <span th:text="${amount}"></span>  </button>
+                                <br/>
+                                <button id="payButton" class="btn btn-success btn-block mb-3" type="Submit" > Pay </button>
+                            </form>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>
+<footer id="sticky-footer">
+    <div class="container-fluid bg-secondary">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-9">
+                    <p class="text-white">Copyright@2021StorageVault.All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
