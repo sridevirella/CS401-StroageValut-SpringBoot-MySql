@@ -1,11 +1,8 @@
 package com.cs401.storagevault.controller;
 
-import com.cs401.storagevault.model.tables.Product;
+import com.cs401.storagevault.model.tables.*;
 import com.cs401.storagevault.services.DBService;
 import com.cs401.storagevault.model.FileStorage;
-import com.cs401.storagevault.model.tables.DeviceRegistration;
-import com.cs401.storagevault.model.tables.SpaceRequest;
-import com.cs401.storagevault.model.tables.User;
 import com.cs401.storagevault.services.FileStorageService;
 import com.cs401.storagevault.services.ProductStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,11 +151,20 @@ public class UIController {
     }
 
     @GetMapping(value = "/consumerPayment")
-    public  String consumerPayment(HttpServletRequest request, Model model) {
+    public  String consumerPayment(@RequestParam String page, HttpServletRequest request, Model model) {
 
         String amount = dbService.getConsumersPriceDetails(getCookieValue(request, "email"));
+        amount = dbService.getTotalPrice(getCookieValue(request, "email")).getPrice() +"$";
         model.addAttribute("amount", amount);
         return "consumerPayment";
+    }
+
+    @GetMapping(value = "/cardPayment")
+    public  String consumerPayment(HttpServletRequest request, Model model) {
+
+        String amount = dbService.getTotalPrice(getCookieValue(request, "email")).getPrice() +"$";
+        model.addAttribute("amount", amount);
+        return "cardPayment";
     }
 
     @RequestMapping(value = "/models")
@@ -191,6 +197,11 @@ public class UIController {
     @PostMapping(value = "/consumerPayment/save")
     public String saveConsumerPayDetails() {
         return "redirect:/storageRetrieval";
+    }
+
+    @PostMapping(value = "/cardPayment/save")
+    public String saveCardPayDetails() {
+        return "redirect:/products";
     }
 
     private void createCookie(HttpServletResponse response, String cookieName, String cookieValue) {
@@ -290,6 +301,15 @@ public class UIController {
 
         model.addAttribute("userName", getCookieValue(request, "userName"));
         return "cart";
+    }
+
+    @RequestMapping("/selected/itemPrice")
+    @ResponseBody
+    public void selectedItemPrice(@RequestParam double price, HttpServletRequest request) {
+
+        String email = getCookieValue(request, "email");
+        System.out.println("payload::email::"+price+"::"+email);
+        dbService.saveTotalPriceToCart(new Cart(email, price));
     }
 
     private String getFileSize(long size, boolean inGBFormat, int capacity) {
