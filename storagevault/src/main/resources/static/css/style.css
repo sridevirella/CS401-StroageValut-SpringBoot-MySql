@@ -30,7 +30,7 @@ body {
 }
 
 .btn-light:not(:disabled):not(.disabled).active {
-  background-color: #98FB98;
+  background-color: #89CFF0;
 }
 
 .navbar-text {
