@@ -26,8 +26,19 @@
                href="/spaceRequest">Space Request</a>
             <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
                href="/storageRetrieval">Storage/Retrieval</a>
-            <a class="mr-2 mt-2 mb-1 nav-item nav-link btn btn-light col-auto"
-               href="/marketPlace">Market Place</a>
+            <div class="btn-group">
+                <button type="button" class="nav-item nav-link btn btn-light col-auto">Market Place</button>
+                <button type="button"
+                        class="nav-item nav-link btn btn-light dropdown-toggle dropdown-toggle-split col-auto"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/sell">Sell</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/products">Buy</a>
+                </div>
+            </div>
 
             <div class="btn-group">
                 <button type="button" class="nav-item nav-link btn btn-light col-auto"><i class="ml-3 fas fa-user"></i><span th:text="${userName}"></span></button>
@@ -56,9 +67,14 @@
                         <div class="card-columns">
                         </div>
                         <div class="col-form-label">
-                            <hr class="bg-custom fancyLine">
+                            <br>
                             <div>
                                 <span th:utext="${#strings.replace(spaceRequest, T(org.apache.commons.lang3.StringUtils).LF, '&lt;br /&gt;')}"></span>
+                            </div>
+                            <div class="bs-example">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" th:width="${percentage}"><span th:text="${percentageValue}"></span></div>
+                                </div>
                             </div>
                         </div>
                     </div>

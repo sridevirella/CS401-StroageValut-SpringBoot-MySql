@@ -1,10 +1,13 @@
 package com.cs401.storagevault.controller;
 
+import com.cs401.storagevault.model.tables.Product;
 import com.cs401.storagevault.services.DBService;
 import com.cs401.storagevault.model.FileStorage;
 import com.cs401.storagevault.model.tables.DeviceRegistration;
 import com.cs401.storagevault.model.tables.SpaceRequest;
 import com.cs401.storagevault.model.tables.User;
+import com.cs401.storagevault.services.FileStorageService;
+import com.cs401.storagevault.services.ProductStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -29,14 +32,14 @@ public class UIController {
 
     @Autowired
     private DBService dbService;
+    @Autowired
+    private ProductStorageService productStorageService;
 
     private final FileStorage fileStorage;
-
     @Autowired
-    public UIController(FileStorage fileStorage) {
-        this.fileStorage = fileStorage;
+    public UIController(FileStorageService fileStorageService) {
+        this.fileStorage = fileStorageService;
     }
-
 
     @GetMapping(value = "/")
     public String home() {
@@ -68,12 +71,12 @@ public class UIController {
         createCookie(response, "userName", _user.getName());
         createCookie(response, "email", _user.getEmail());
 
-       if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'L')
-           return "redirect:/lenderDashboard";
-       else if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'C')
-           return "redirect:/consumerDashboard";
-       else
-           return "redirect:/login";
+        if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'L')
+            return "redirect:/lenderDashboard";
+        else if(_user.getEmail().equals(email) && _user.getPassword().equals(password) && _user.getUserType() == 'C')
+            return "redirect:/consumerDashboard";
+        else
+            return "redirect:/login";
     }
 
     @GetMapping(value = "lenderMainPage")
@@ -91,10 +94,10 @@ public class UIController {
 
         lentDevicesList.forEach( device -> {
             String resultString = "Device Brand:           " + device.getBrand() + "\n" +
-                                  "Device Model:           " + device.getBrandModel() + "\n" +
-                                  "Lent Storage Capacity:  " + device.getCapacity() + " GB" +  "\n" +
-                                  "Lent Duration:          " + device.getDuration() + " Hours" + "\n" +
-                                  "Earnings:               " + device.getPrice() + " $" + "\n";
+                    "Device Model:           " + device.getBrandModel() + "\n" +
+                    "Lent Storage Capacity:  " + device.getCapacity() + " GB" +  "\n" +
+                    "Lent Duration:          " + device.getDuration() + " Hours" + "\n" +
+                    "Earnings:               " + device.getPrice() + " $" + "\n";
             lentDeviceListString.add(resultString);
         });
         model.addAttribute("registrations",  lentDeviceListString);
@@ -108,15 +111,21 @@ public class UIController {
         SpaceRequest spaceRequest = dbService.getConsumerSpaceRequests(getCookieValue(request, "email"));
         List<String> spaceRequestListString = new ArrayList<>();
         String resultString = "";
+        String percentage = "";
+        String percentageValue = "";
 
         if (spaceRequest != null) {
-             resultString = "Allocated storage space:   " + spaceRequest.getCapacity() + "GB" + "\n" +
-                            "usage cost:                " + spaceRequest.getPrice() + "\n" +
-                            "Used Storage Space:        " + getFileSize(spaceRequest.getUsedSpace()) + "\n";
-             spaceRequestListString.add(resultString);
-     }
+            resultString = "Allocated storage space:   " + spaceRequest.getCapacity() + "GB" + "\n" +
+                    "usage cost:                " + spaceRequest.getPrice() + "\n" +
+                    "Used Storage Space:        " + getFileSize(spaceRequest.getUsedSpace(), false, spaceRequest.getCapacity()) + "\n";
+            spaceRequestListString.add(resultString);
+            percentage = getFileSize(spaceRequest.getUsedSpace(), true, spaceRequest.getCapacity());
+            percentageValue = getFileSize(spaceRequest.getUsedSpace(), false, spaceRequest.getCapacity());
+        }
 
         model.addAttribute("spaceRequests",  spaceRequestListString);
+        model.addAttribute("percentage", percentage);
+        model.addAttribute("percentageValue", percentageValue );
         return "consumerDashboard";
     }
 
@@ -169,14 +178,12 @@ public class UIController {
     @ResponseBody
     public int getPricingModel(@RequestParam char customerType, @RequestParam String subscription) {
 
-        System.out.println("inside:"+ subscription);
         return dbService.getPricingModel(customerType, subscription);
     }
 
     @PostMapping(value = "/deviceRegistration/save")
     public String saveDeviceRegistrationDetails(DeviceRegistration deviceRegistration, Model model) {
 
-        System.out.println("payload:"+deviceRegistration.toString());
         dbService.saveDeviceRegistrationDetails(deviceRegistration);
         return "redirect:/lenderDashboard";
     }
@@ -184,11 +191,6 @@ public class UIController {
     @PostMapping(value = "/consumerPayment/save")
     public String saveConsumerPayDetails() {
         return "redirect:/storageRetrieval";
-    }
-
-    @GetMapping(value = "/marketPlace")
-    public String getMarketPlace() {
-        return "marketPlace";
     }
 
     private void createCookie(HttpServletResponse response, String cookieName, String cookieValue) {
@@ -209,13 +211,13 @@ public class UIController {
     }
 
     @GetMapping("/storageRetrieval")
-    public String listUploadedFiles(Model model) throws IOException {
+    public String listUploadedFiles(HttpServletRequest request, Model model) throws IOException {
 
+        model.addAttribute("userName", getCookieValue(request, "userName"));
         model.addAttribute("files", fileStorage.loadAllFiles().map(
                 path -> MvcUriComponentsBuilder.fromMethodName(UIController.class,
                         "getFile", path.getFileName().toString()).build().toUri().toString())
                 .collect(Collectors.toList()));
-
         return "storageRetrieval";
     }
 
@@ -235,17 +237,79 @@ public class UIController {
         return "redirect:/storageRetrieval";
     }
 
-    private String getFileSize(long size) {
+    @GetMapping("/sell")
+    public String marketPlaceSellPage(HttpServletRequest request, Model model) {
+
+        model.addAttribute("userName", getCookieValue(request, "userName"));
+        return "sell";
+    }
+
+    @PostMapping("/product/save")
+    public String createProduct(@RequestParam("name") String name,
+                                @RequestParam("description") String description,
+                                @RequestParam("seller") String seller,
+                                @RequestParam("price") double price,
+                                @RequestParam("image") MultipartFile file,
+                                Model model, HttpServletRequest request) throws IOException {
+        System.out.println("inside");
+        productStorageService.initService();
+        productStorageService.storeFile(file);
+
+        Product newProduct = new Product();
+        newProduct.setName(name);
+        newProduct.setDescription(description);
+        newProduct.setSeller(seller);
+        newProduct.setPrice(price);
+        newProduct.setImage(file.getBytes());
+        dbService.saveProduct(newProduct);
+        System.out.println("successfully saved product");
+        return "redirect:/sell";
+    }
+
+    @GetMapping("/product/display/{id}")
+    @ResponseBody
+    void showProductImage(@PathVariable("id") int id, HttpServletResponse response, Optional<Product> product)
+            throws IOException {
+        product = dbService.getProductById(id);
+        response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
+        response.getOutputStream().write(product.get().getImage());
+        response.getOutputStream().close();
+    }
+
+    @GetMapping("/products")
+    public String show(Model model, HttpServletRequest request) {
+
+        List<Product> products = dbService.getAllProducts();
+        model.addAttribute("userName", getCookieValue(request, "userName"));
+        model.addAttribute("products", products);
+        return "products";
+    }
+
+    @GetMapping("/cart")
+    public String showCart(Model model, HttpServletRequest request) {
+
+        model.addAttribute("userName", getCookieValue(request, "userName"));
+        return "cart";
+    }
+
+    private String getFileSize(long size, boolean inGBFormat, int capacity) {
 
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         float kb = 1024.0f;
         float mb = kb * kb;
         float gb = mb * kb;
 
-        if(size < mb)
-            return decimalFormat.format(size/kb)+ " Kb";
-        else if(size < gb)
-            return decimalFormat.format(size/mb) + " Mb";
-        else return "";
+        if(inGBFormat) {
+
+            String value = (size / mb)/((capacity * 1024)) * 100 +"%";
+
+            return value;
+        } else {
+            if (size < mb)
+                return decimalFormat.format(size / kb) + " Kb";
+            else if (size < gb)
+                return decimalFormat.format(size / mb) + " Mb";
+            else return "";
+        }
     }
 }

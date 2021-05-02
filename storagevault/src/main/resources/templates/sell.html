@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <title>Lender Dashboard</title>
+    <title>Device Lending</title>
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
@@ -37,7 +37,6 @@
                     <a class="dropdown-item" href="/products">Buy</a>
                 </div>
             </div>
-
             <div class="btn-group">
                 <button type="button" class="nav-item nav-link btn btn-light col-auto"><i class="ml-3 fas fa-user"></i><span th:text="${userName}"></span></button>
                 <button type="button"
@@ -55,34 +54,62 @@
     </nav>
 </header>
 
-<div class="container-fluid py-3">
+<form method="POST" enctype="multipart/form-data" action="/product/save">
+<div class="container-fluid">
+    <div class="container emphasize-dark">
     <div class="row">
         <div class="col-md-6 mx-auto mt-4">
-            <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; text-align:center">Details of Lent NAS Devices</p>
-            <div class="d-flex flex-column flex-nowrap">
-                <div th:each="registration: ${registrations}">
-                <div class="card card-body emphasize-dark mt-2">
-                    <div class="card-columns">
-                    </div>
-                    <div class="col-form-label">
-                        <hr class="bg-custom fancyLine">
-                            <div>
-                                <span th:utext="${#strings.replace(registration, T(org.apache.commons.lang3.StringUtils).LF, '&lt;br /&gt;')}"></span>
-                            </div>
+            <div class="col-md-12" style="float:left">
+                <div class="card mt-2 mb-4">
+                    <div class="card-body">
+                     <p style="color: #00308F; font: 24px 'Raleway';opacity: 0.6;font-weight: bolder; text-align:center">Sell Your Storage Devices</p>
+
+                        <div class="form-group">
+                            <label for="name">Product Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required="required">
                         </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control"  id="description" name="description" required="required"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="seller">Seller Name</label>
+                            <input class="form-control" id="seller" name="seller" required="required">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price">Price</label>
+                            <input type="text" class="form-control" name="price" id="price" required="required">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            <input type="file" class="form-control"  name="image" id="image" required="required">
+                        </div>
+                        <button class="btn btn-primary" id="postId" type="submit" value="Upload">Create Post</button>
+
                     </div>
-                   </div>
+                    </div>
                 </div>
+              </div>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
-
-<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="application/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+$(document).ready(function() {
+$("#postId").click(function(){
+alert("Successfully Posted");
+});
+})
+</script>
 </body>
-
 </html>
 <footer id="sticky-footer">
     <div class="container-fluid bg-secondary">

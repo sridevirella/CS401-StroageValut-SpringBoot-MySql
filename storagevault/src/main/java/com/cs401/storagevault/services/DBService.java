@@ -2,13 +2,13 @@ package com.cs401.storagevault.services;
 
 import com.cs401.storagevault.model.repository.*;
 import com.cs401.storagevault.model.tables.DeviceRegistration;
+import com.cs401.storagevault.model.tables.Product;
 import com.cs401.storagevault.model.tables.SpaceRequest;
 import com.cs401.storagevault.model.tables.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -27,8 +27,8 @@ public class DBService {
     private DeviceRegistrationRepo deviceRegistrationRepo;
     @Autowired
     private SpaceRequestRepository spaceRequestRepository;
-
-
+    @Autowired
+    private ProductRepository productRepository;
 
     public List<User> listAllUsers() {
         return userRepository.findAll();
@@ -87,5 +87,17 @@ public class DBService {
 
     public String getConsumersPriceDetails(String email) {
         return spaceRequestRepository.getPrice(email);
+    }
+
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    public Optional<Product> getProductById(int id) {
+        return productRepository.findById(id);
     }
 }
