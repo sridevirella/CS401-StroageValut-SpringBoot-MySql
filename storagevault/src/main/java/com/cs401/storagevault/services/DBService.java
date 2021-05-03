@@ -55,7 +55,7 @@ public class DBService {
         return models;
     }
 
-    public int getPricingModel(char customerType, String subscriptionType) {
+    public double getPricingModel(char customerType, String subscriptionType) {
 
         if(subscriptionType.equals("Y"))
             return pricingRepository.yearlySubscriptionPrice(customerType);

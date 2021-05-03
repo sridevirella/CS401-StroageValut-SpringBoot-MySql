@@ -151,7 +151,7 @@ public class UIController {
     }
 
     @GetMapping(value = "/consumerPayment")
-    public  String consumerPayment(@RequestParam String page, HttpServletRequest request, Model model) {
+    public  String consumerPayment(HttpServletRequest request, Model model) {
 
         String amount = dbService.getConsumersPriceDetails(getCookieValue(request, "email"));
         amount = dbService.getTotalPrice(getCookieValue(request, "email")).getPrice() +"$";
@@ -160,7 +160,7 @@ public class UIController {
     }
 
     @GetMapping(value = "/cardPayment")
-    public  String consumerPayment(HttpServletRequest request, Model model) {
+    public  String cardPayment(HttpServletRequest request, Model model) {
 
         String amount = dbService.getTotalPrice(getCookieValue(request, "email")).getPrice() +"$";
         model.addAttribute("amount", amount);
@@ -176,13 +176,13 @@ public class UIController {
 
     @RequestMapping(value = "/lender/pricing")
     @ResponseBody
-    public int getPricingModel(@RequestParam char customerType) {
+    public double getPricingModel(@RequestParam char customerType) {
         return dbService.getPricingModel(customerType, "");
     }
 
     @RequestMapping(value = "/consumer/pricing")
     @ResponseBody
-    public int getPricingModel(@RequestParam char customerType, @RequestParam String subscription) {
+    public double getPricingModel(@RequestParam char customerType, @RequestParam String subscription) {
 
         return dbService.getPricingModel(customerType, subscription);
     }
@@ -251,6 +251,7 @@ public class UIController {
     @GetMapping("/sell")
     public String marketPlaceSellPage(HttpServletRequest request, Model model) {
 
+        System.out.println("user name:"+getCookieValue(request, "userName"));
         model.addAttribute("userName", getCookieValue(request, "userName"));
         return "sell";
     }

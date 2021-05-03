@@ -9,12 +9,12 @@ public class Pricing {
     @Id
     private int id;
     private char customerType;
-    private int  monthlyPrice;
-    private int  yearlyPrice;
+    private double  monthlyPrice;
+    private double  yearlyPrice;
 
     public Pricing() {}
 
-    public Pricing(int id, char customerType, int monthlyPrice, int yearlyPrice) {
+    public Pricing(int id, char customerType, double monthlyPrice, double yearlyPrice) {
         this.id = id;
         this.customerType = customerType;
         this.monthlyPrice = monthlyPrice;
@@ -37,19 +37,19 @@ public class Pricing {
         this.customerType = customerType;
     }
 
-    public int getMonthlyPrice() {
+    public double getMonthlyPrice() {
         return monthlyPrice;
     }
 
-    public void setMonthlyPrice(int monthlyPrice) {
+    public void setMonthlyPrice(double monthlyPrice) {
         this.monthlyPrice = monthlyPrice;
     }
 
-    public int getYearlyPrice() {
+    public double getYearlyPrice() {
         return yearlyPrice;
     }
 
-    public void setYearlyPrice(int yearlyPrice) {
+    public void setYearlyPrice(double yearlyPrice) {
         this.yearlyPrice = yearlyPrice;
     }
 }
