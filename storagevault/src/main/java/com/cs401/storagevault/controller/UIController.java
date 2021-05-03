@@ -154,7 +154,6 @@ public class UIController {
     public  String consumerPayment(HttpServletRequest request, Model model) {
 
         String amount = dbService.getConsumersPriceDetails(getCookieValue(request, "email"));
-        amount = dbService.getTotalPrice(getCookieValue(request, "email")).getPrice() +"$";
         model.addAttribute("amount", amount);
         return "consumerPayment";
     }
@@ -252,6 +251,8 @@ public class UIController {
     public String marketPlaceSellPage(HttpServletRequest request, Model model) {
 
         System.out.println("user name:"+getCookieValue(request, "userName"));
+        boolean isALender = dbService.findByEmail(getCookieValue(request, "email")).getUserType() == 'L';
+        model.addAttribute("lender", isALender);
         model.addAttribute("userName", getCookieValue(request, "userName"));
         return "sell";
     }
@@ -294,6 +295,8 @@ public class UIController {
         List<Product> products = dbService.getAllProducts();
         model.addAttribute("userName", getCookieValue(request, "userName"));
         model.addAttribute("products", products);
+        boolean isALender = dbService.findByEmail(getCookieValue(request, "email")).getUserType() == 'L';
+        model.addAttribute("lender", isALender);
         return "products";
     }
 
